@@ -5,103 +5,52 @@
 #include <cstdlib>
 #include <time.h>
 
-struct Player
-{
-	int death, kills, puntuation, items, games;
+struct GameObject {
+	char type;
+	int x;
+	int y;
 };
 
-struct Point
+void SaveObjects(std::vector<GameObject>objects, std::string fileName) 
 {
-	float x, y;
-};
+	std::ofstream writeFile(fileName, std::ios::binary | std::ios::trunc);
+	if (!writeFile.is_open()) {
+		return;
+	}
+
+	size_t size = objects.size();
+	if (size == 0)return;
+
+	writeFile.write(reinterpret_cast<char*>(size), sizeof(size_t));
+	writeFile.write(reinterpret_cast<char*>(objects.data()), sizeof(GameObject) * size);
+	writeFile.close();
+}	
+
+void RecoverObjects(std::vector<GameObject>& objects, std::string fileName) {
+	std::ifstream readFile(fileName, std::ios::binary);
+	if (!readFile.is_open())return;
+	size_t size = objects.size();
+	readFile.read(reinterpret_cast<char*>(size), sizeof(size_t));
+	readFile.read(reinterpret_cast<char*>(objects.data()), sizeof(GameObject) * size);
+	readFile.close();
+
+
+}
 
 int main() {
-	//ejemplo ofstream
-	/*std::ofstream myfile("miarchivo.txt");
-	if (myfile.is_open()) {
-		myfile << "Hello World!\n";
-		myfile.close();
+	std::string fileName = "data.bin";
+	std::vector<GameObject> objects = {
+		('A', 10, 20),
+		('B', 10, 20),
+		('C', 10, 20)
+	};
+	SaveObjects(objects, fileName);
+
+	std::vector<GameObject> objectsRecovered;
+	RecoverObjects(objects, fileName);
+
+	std::cout << "objtos Recuperados \n";
+	for (int i = 0; i < objectsRecovered.size(); i++) {
+		std::cout << "Type: " << objectsRecovered[i].type << ", X: " << objectsRecovered[i].x << ", Y: " << objectsRecovered[i].y << std::endl;
 	}
-	else {
-		std::cout << "No he encontrado el archivo\n";
-	}*/
-
-
-	/*std::fstream myfile;
-	myfile.open("miArchivo.txt", std::ios::out | std::ios::trunc);
-	if (myfile.is_open()) {
-		myfile << "Hello Dead World!\n";
-		myfile.close();
-	}*/
-
-	/*std::string line;
-	std::ifstream myfile;
-	myfile.open("miArchivo.txt");
-
-	if (myfile.is_open()) {
-		while (std::getline(myfile, line)) {
-			std::cout << line << std::endl;
-		}
-
-		std::cout << line;
-		myfile.close();
-
-	}*/
-
-	/*std::vector<Player> listaJugadores;
-	std::string line;
-	std::ifstream myfile;
-	myfile.open("miArchivo.txt");
-
-	if (myfile.is_open()) {
-		while (std::getline(myfile, line)) {
-			for (int i = 0; i < line.length(); i++)
-			{
-				Player tmp;
-				if (line[i] != ',') {
-
-				}
-			}
-		}
-
-		myfile.close();
-
-	}*/
-	
-	/*std::vector<Point> figuraGeometrica;
-	std::string line;
-	std::ifstream myfile;
-	myfile.open("miArchivo.txt");
-
-	if (myfile.is_open()) {
-		std::vector<float> numberFloat;
-
-		while (std::getline(myfile, line, ' ')) {
-			float numero = std::stof(line);
-			numberFloat.push_back(numero);
-		}
-		for (int i = 0; i < numberFloat.size(); i+=2)
-		{
-			Point tmp;
-			tmp.x = numberFloat[i];
-			tmp.y = numberFloat[i+1];
-			figuraGeometrica.push_back(tmp);
-		}
-
-		for (int i = 0; i < figuraGeometrica.size(); i++)
-		{
-			std::cout << i << ": " << figuraGeometrica[i].x << "," << figuraGeometrica[i].y << std::endl;
-		}
-
-	}*/
-
-	short random;
-
-	for (int i = 0; i < 10; i++)
-	{
-		
-	}
-
-
-
 }
